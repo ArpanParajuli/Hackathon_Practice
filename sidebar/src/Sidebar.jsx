@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import './Sidebar.css';
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('dashboard');
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   // Menu items - easy to customize
   const menuItems = [
@@ -29,10 +30,34 @@ function Sidebar() {
     alert('You have been logged out!');
   };
 
-  // Toggle dark mode (simple example)
+  // Toggle dark mode
   const handleDarkMode = () => {
-    alert('Dark mode toggled!');
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    // Save preference to browser storage
+    localStorage.setItem('darkMode', newDarkMode);
+
+    onDarkModeChange(newDarkMode);
+
+    if(!newDarkMode) {
+      document.body.classList.add('light-mode');
+      document.body.classList.remove('dark-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+      document.body.classList.add('dark-mode');
+    }
   };
+
+  useEffect(() => {
+  const savedDarkMode = localStorage.getItem('darkMode');
+  if (savedDarkMode !== null) {
+    const isDark = JSON.parse(savedDarkMode);
+    setIsDarkMode(isDark);
+    if (!isDark) {
+      document.body.classList.add('light-mode');
+    }
+  }
+}, []);
 
   return (
     <>
@@ -42,7 +67,7 @@ function Sidebar() {
       </button>
 
       {/* Sidebar */}
-      <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <div className={`sidebar ${isOpen ? 'open' : ''} ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
         
         {/* Brand section */}
         <div className="sidebar-header">
@@ -72,8 +97,8 @@ function Sidebar() {
         {/* Footer section */}
         <div className="sidebar-footer">
           <button className="footer-btn dark-mode-btn" onClick={handleDarkMode}>
-            <span>🌙</span>
-            <span>Dark Mode</span>
+            <span>{isDarkMode ? '☀️' : '🌙'}</span>
+            <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
           
           <button className="footer-btn logout-btn" onClick={handleLogout}>

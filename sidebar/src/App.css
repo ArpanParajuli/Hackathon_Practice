@@ -3,7 +3,12 @@
   display: flex;
   min-height: 100vh;
 }
-
+.app.dark-mode {
+  background-color: #0f1724;
+}
+.app.light-mode {
+  background-color: #f0f0f0;
+}
 /* Main content area */
 .main-content {
   flex: 1;
